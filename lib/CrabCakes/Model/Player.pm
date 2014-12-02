@@ -1,0 +1,1 @@
+package CrabCakes::Model::Player;
