@@ -3,13 +3,24 @@ package CrabCakes::Model::Deck;
 use CrabCakes::Control::CardMaker;
 
 use Mouse;
-use Array::Shuffle;
+
+has '_sorted_cards' => (
+       traits     => ['Array'],
+       is         => 'rw',
+       isa        => 'ArrayRef',
+       lazy       => 1,
+       builder    => '_build_sorted_deck',
+       handles    => {
+           _shuffle_deck => 'shuffle'
+       },
+);
 
 has 'cards' => (
        traits     => ['Array'],
        is         => 'rw',
        isa        => 'ArrayRef',
-       builder    => 'new_deck',
+       lazy       => 1,
+       builder    => '_new_deck',
        handles    => {
            all_cards    => 'elements',
            add_card     => 'push',
@@ -17,28 +28,23 @@ has 'cards' => (
            first_card => 'first',
            last_card  => 'first',
            size       => 'count',
-           _shuffle_deck => 'shuffle'
        },
 );
 
-has 'sorted' => ( 
-   isa => 'Bool',
-   is => 'rw',
-   default =>sub { return 1 }
-);
 
 sub BUILD {
    my ($self)=@_;
-   $self->shuffle_it();
-   $self->sorted(0);
 }
 
-sub shuffled {
-  return !($_[0]->sorted);
-};
+sub _new_deck {
+   my ($self)=@_;
+   my @deck=$self->_shuffle_deck();
+   return \@deck;
+}
 
-sub new_deck {
-   my ($self,@args)=@_;
+sub _build_sorted_deck {
+
+   my ($self)=@_;
 
    my $deck=[];
 
@@ -54,19 +60,8 @@ sub new_deck {
          push @$deck, $cardMaker->card(number=>$number,suit=>$suit);
       }
    }
-   $self->sorted(1);
    return $deck;
 
 }
 
-sub shuffle_it{ 
-   my ($self,@args)=@_;
-$DB::single=1;
-$self->_shuffle_deck();
-#   $self->cards(
-#);
-   $self->sorted(0);
-}
-
 1;
-

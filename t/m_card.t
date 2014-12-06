@@ -22,6 +22,8 @@ my $cm = CrabCakes::Model::Card->new(
     abbreviation => 'ph'
 );
 isa_ok( $cm, 'CrabCakes::Model::Card' );
+is( $cm->visible_to(), 'nobody', 'visible_to defaulted to nobody');
+
 my $cm = CrabCakes::Model::Card->new(
     number => 2,
     suit   => 'hearts',
