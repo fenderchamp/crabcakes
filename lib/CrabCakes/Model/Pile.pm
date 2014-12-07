@@ -1,1 +1,3 @@
-package CrabCakes::Model::Deck;
+package CrabCakes::Model::Pile;
+use Mouse;
+1;

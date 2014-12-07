@@ -1,8 +1,9 @@
 package CrabCakes::Model::Deck;
 
-use CrabCakes::Control::CardMaker;
 
 use Mouse;
+with 'CrabCakes::Model::StackOCards';
+use CrabCakes::Control::CardMaker;
 
 has '_sorted_cards' => (
        traits     => ['Array'],
@@ -15,28 +16,11 @@ has '_sorted_cards' => (
        },
 );
 
-has 'cards' => (
-       traits     => ['Array'],
-       is         => 'rw',
-       isa        => 'ArrayRef',
-       lazy       => 1,
-       builder    => '_new_deck',
-       handles    => {
-           all_cards    => 'elements',
-           add_card     => 'push',
-           filter_cards => 'grep',
-           first_card => 'first',
-           last_card  => 'first',
-           size       => 'count',
-       },
-);
-
-
 sub BUILD {
    my ($self)=@_;
 }
 
-sub _new_deck {
+sub _new_stack {
    my ($self)=@_;
    my @deck=$self->_shuffle_deck();
    return \@deck;
