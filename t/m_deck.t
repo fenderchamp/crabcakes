@@ -1,6 +1,6 @@
-
+use strict;
 use CrabCakes::Model::Deck;
-use Test::More no_plan;
+use Test::More 'no_plan';
 use Test::Exception;
 
 #buddha — 'Holding onto anger is like drinking poison and expecting the other person to die.'

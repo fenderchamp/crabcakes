@@ -1,7 +1,7 @@
-use CrabCakes::Model::Game;
-use Test::More no_plan;
-use Test::Exception;
 use strict;
+use CrabCakes::Model::Game;
+use Test::More 'no_plan';
+use Test::Exception;
 
 #basic game initializers
 
@@ -27,17 +27,19 @@ ok(! $game->player(3),'no fourth player found');
 dies_ok ( sub { my $game=new_game(game_size=>1)} ,'invalid game size 1 dies');
 dies_ok ( sub { my $game=new_game(game_size=>4)} ,'invalid game size 1 dies');
 
-isa_ok($game->discards,'CrabCakes::Model::Discard','discard pile Found');
+isa_ok($game->discards,'CrabCakes::Model::Discards','discard pile Found');
 is($game->discards->size,0, 'no discarded cards found');
 
 isa_ok($game->pile,'CrabCakes::Model::Pile','draw_from_stack pile Found');
 is($game->pile->size,28, '28  cards to draw from');
 
-exit;
 my %visibles;
 foreach my $card ($game->cards_in_pile) {
    $visibles{$card->visible_to}++;
 }
+
+exit;
+
 is($visibles{nobody},28,'28 cards in pile visible to nobody');
 is(scalar(keys(%visibles)),1,'28 all in pile visible to nobody');
 

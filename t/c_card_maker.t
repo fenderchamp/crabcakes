@@ -1,7 +1,7 @@
-
+use strict;
 use CrabCakes::Control::CardMaker;
 
-use Test::More no_plan;
+use Test::More 'no_plan';
 
 my $cm = CrabCakes::Control::CardMaker->new();
 isa_ok( $cm, 'CrabCakes::Control::CardMaker' );

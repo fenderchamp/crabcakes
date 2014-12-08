@@ -13,15 +13,8 @@ has 'cards' => (
            all_cards    => 'elements',
            add_card     => 'push',
            filter_cards => 'grep',
-           first_card => 'first',
-           last_card  => 'first',
            size       => 'count',
        },
 );
-
-
-sub BUILD {
-   my ($self)=@_;
-}
 
 1;

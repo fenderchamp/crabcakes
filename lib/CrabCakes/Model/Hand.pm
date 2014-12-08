@@ -1,4 +1,4 @@
-package CrabCakes::Model::Pile;
+package CrabCakes::Model::Hand;
 
 use Mouse;
 with 'CrabCakes::Model::StackOCards';
