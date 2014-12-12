@@ -3,7 +3,7 @@ use CrabCakes::Model::Hand;
 use CrabCakes::Model::CrabCake;
 use Mouse;
 
-has 'crab_cakes_count' => (
+has '_crab_cakes_count' => (
        is         => 'rw',
        isa        => 'Int',
        lazy       => 1,
@@ -18,7 +18,9 @@ has crab_cakes => (
        builder    => '_crab_cakes',
        handles    => {
            crab_cake      => 'get',
-           add_crab_cake  => 'push'
+           add_crab_cake  => 'push',
+           get_crab_cake  => 'get',
+           crab_cakes_count  => 'count'
        },
 );
 
@@ -33,12 +35,16 @@ sub _crab_cakes {
   my ($self)=@_;
    my $ccs;
    my $i=0;
-   while ( $i++ < $self->crab_cakes_count() ) {
+   while ( $i++ < $self->_crab_cakes_count() ) {
       push @$ccs,CrabCakes::Model::CrabCake->new();
    }
    return $ccs;
 
 }
 
-
+sub take_card {
+   my ($self,$card)=@_;
+   $card->visible_to('player');
+   $self->hand->add_card($card);
+}
 1;

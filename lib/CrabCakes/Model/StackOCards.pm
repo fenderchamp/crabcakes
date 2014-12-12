@@ -12,6 +12,7 @@ has 'cards' => (
        handles    => {
            all_cards    => 'elements',
            add_card     => 'push',
+           next_card     => 'pop',
            filter_cards => 'grep',
            size       => 'count',
        },

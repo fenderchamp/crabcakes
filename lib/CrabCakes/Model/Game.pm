@@ -51,28 +51,11 @@ has 'players' => (
 sub BUILD {
    my ($self)=@_;
    my $deck=CrabCakes::Model::Deck->new(); 
-
-   #deal it bitch!!
-   #crabcakes face down;
-   for( my $cc=0;$cc<4;$cc++ ) {
-      for( my $i=0;$i<$self->game_size;$i ++ ) {
-$DB::single=1;
-         my $p=$self->player($i);
-         my $cake=$p->crab_cake($cc);
-
-         $self->player($i)->crab_cake($cc)->bottom_card($deck->next_card());
-      }
-   }
-   #crabcakes face down;
-   for( my $cc=0;$cc<4;$cc++ ) {
-      for( my $i=0;$i<$self->game_size;$i ++ ) {
-         $self->player($i)->crab_cake($cc)->top_card($deck->next_card());
-      }
-   }
-   #crabcakes face down;
    for( my $hand=0;$hand<4;$hand++ ) {
-      for( my $i=0;$i<$self->game_size;$i ++ ) {
-         $self->player($i)->take_card($deck->next_card());
+      for( my $i=0;$i<$self->game_size;$i++ ) {
+         $self->player($i)->get_crab_cake($hand)->add_bottom_card($deck->next_card);
+         $self->player($i)->get_crab_cake($hand)->add_top_card($deck->next_card);
+         $self->player($i)->take_card($deck->next_card);
       }
    }
    $self->pile->cards($deck->cards());

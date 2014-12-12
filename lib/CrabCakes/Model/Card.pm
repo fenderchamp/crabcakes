@@ -5,7 +5,7 @@ use Mouse;
 use Mouse::Util::TypeConstraints;
 
 enum 'Suit' => qw(clubs spades hearts diamonds);
-enum 'VisibilityTrait' => qw(player nobody everyone);
+enum 'VisibilityTrait' => qw(player nobody everybody);
 enum 'CardNumber' => (2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
 
 no Mouse::Util::TypeConstraints;
