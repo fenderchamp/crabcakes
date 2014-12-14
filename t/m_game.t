@@ -14,6 +14,7 @@ isa_ok($game->player(0),'CrabCakes::Model::Player','first player Found');
 isa_ok($game->player(1),'CrabCakes::Model::Player','second player Found');
 ok(! $game->player(2),'no third player found');
 
+$DB::single=1;
 # 3 player game 
 my $game=new_game(game_size=>3);
 is($game->player_count,3,'three players by default');

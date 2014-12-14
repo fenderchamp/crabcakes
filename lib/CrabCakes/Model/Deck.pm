@@ -1,50 +1,49 @@
 package CrabCakes::Model::Deck;
 
-
 use Mouse;
 with 'CrabCakes::Model::StackOCards';
 use CrabCakes::Control::CardMaker;
 
 has '_sorted_cards' => (
-       traits     => ['Array'],
-       is         => 'rw',
-       isa        => 'ArrayRef',
-       lazy       => 1,
-       builder    => '_build_sorted_deck',
-       handles    => {
-           _shuffle_deck => 'shuffle'
-       },
+    traits  => ['Array'],
+    is      => 'rw',
+    isa     => 'ArrayRef',
+    lazy    => 1,
+    builder => '_build_sorted_deck',
+    handles => {
+        _shuffle_deck => 'shuffle'
+    },
 );
 
 sub BUILD {
-   my ($self)=@_;
+    my ($self) = @_;
 }
 
 sub _new_stack {
-   my ($self)=@_;
-   my @deck=$self->_shuffle_deck();
-   return \@deck;
+    my ($self) = @_;
+    my @deck = $self->_shuffle_deck();
+    return \@deck;
 }
 
 sub _build_sorted_deck {
 
-   my ($self)=@_;
+    my ($self) = @_;
 
-   my $deck=[];
+    my $deck = [];
 
-   my $cardMaker=CrabCakes::Control::CardMaker->new;
-   foreach my $suit  (qw(clubs diamonds)) { 
-      for ( my $number=2;$number<=14;$number++ ){
-         push @$deck, $cardMaker->card(number=>$number,suit=>$suit);
-      }
-   }
+    my $cardMaker = CrabCakes::Control::CardMaker->new;
+    foreach my $suit (qw(clubs diamonds)) {
+        for ( my $number = 2 ; $number <= 14 ; $number++ ) {
+            push @$deck, $cardMaker->card( number => $number, suit => $suit );
+        }
+    }
 
-   foreach my $suit  (qw(hearts spades)) { 
-      for ( my $number=14;$number>=2;$number-- ){
-         push @$deck, $cardMaker->card(number=>$number,suit=>$suit);
-      }
-   }
-   return $deck;
+    foreach my $suit (qw(hearts spades)) {
+        for ( my $number = 14 ; $number >= 2 ; $number-- ) {
+            push @$deck, $cardMaker->card( number => $number, suit => $suit );
+        }
+    }
+    return $deck;
 
 }
 
