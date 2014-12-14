@@ -9,7 +9,7 @@ my $a;
 my $pile = CrabCakes::Model::Pile->new();
 
 is( $pile->size, 0, '0 in the deck' );
-isa_ok( $pile->cards, 'ARRAY', 'empty ...really I prefere Barney Fife'); 
+isa_ok( $pile->cards, 'ARRAY', 'empty ...really I prefere Barney Fife' );
 
 exit;
 

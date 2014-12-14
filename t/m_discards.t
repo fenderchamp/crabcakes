@@ -9,7 +9,7 @@ my $a;
 my $discards = CrabCakes::Model::Discards->new();
 
 is( $discards->size, 0, '0 in the deck' );
-isa_ok( $discards->cards, 'ARRAY', 'empty ...really I prefere Barney Fife'); 
+isa_ok( $discards->cards, 'ARRAY', 'empty ...really I prefere Barney Fife' );
 
 exit;
 

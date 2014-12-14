@@ -17,31 +17,31 @@ dies_ok { my $cm = CrabCakes::Model::Card->new( number => 2, suit => 'dime' ) }
 'dies good number bad suit';
 
 my $cm = CrabCakes::Model::Card->new(
-    number => 2,
-    suit   => 'diamonds',
+    number       => 2,
+    suit         => 'diamonds',
     full_name    => 'pholder',
     abbreviation => 'ph'
 );
 isa_ok( $cm, 'CrabCakes::Model::Card' );
-is( $cm->visible_to(), 'nobody', 'visible_to defaulted to nobody');
+is( $cm->visible_to(), 'nobody', 'visible_to defaulted to nobody' );
 
 my $cm = CrabCakes::Model::Card->new(
-    number => 2,
-    suit   => 'hearts',
+    number       => 2,
+    suit         => 'hearts',
     full_name    => 'pholder',
     abbreviation => 'ph'
 );
 isa_ok( $cm, 'CrabCakes::Model::Card' );
 my $cm = CrabCakes::Model::Card->new(
-    number => 2,
-    suit   => 'spades',
+    number       => 2,
+    suit         => 'spades',
     full_name    => 'pholder',
     abbreviation => 'ph'
 );
 isa_ok( $cm, 'CrabCakes::Model::Card' );
 my $cm = CrabCakes::Model::Card->new(
-    number => 2,
-    suit   => 'clubs',
+    number       => 2,
+    suit         => 'clubs',
     full_name    => 'pholder',
     abbreviation => 'ph'
 );

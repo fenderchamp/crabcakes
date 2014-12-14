@@ -8,7 +8,7 @@ use Test::Exception;
 my $a;
 my $deck = CrabCakes::Model::Deck->new();
 
-$DB::single=1;
+$DB::single = 1;
 is( $deck->size, 52, '52 in the deck' );
 
 exit;
