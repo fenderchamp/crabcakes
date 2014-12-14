@@ -21,7 +21,7 @@ has 'cards' => (
 
 has '_indexed' => (
    is =>'rw',
-   isa =>'Boolean',
+   isa =>'Bool',
    default => sub {return 0}
 );
 
@@ -42,20 +42,20 @@ sub BUILD {
 
 sub _build_by_name {
     my ($self) = @_;
-    my $by_name;
+    my $by_name={};
     my $count=0;
     for my $card ($self->all_cards ) {
       $by_name->{$card->abbreviation}=$count; 
       $count++;
     }
-    $self->indexed(1);
+    $self->_indexed(1);
     return $by_name;
 }
 
 sub index_stack {
     my ($self) = @_;
     $self->_by_name($self->_build_by_name);
-    $self->indexed(1);
+    $self->_indexed(1);
 }
 
 sub get_card_by_name {

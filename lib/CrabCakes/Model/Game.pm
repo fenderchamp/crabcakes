@@ -62,14 +62,20 @@ has 'players' => (
 
 sub BUILD {
     my ($self) = @_;
+$DB::single=1;
     my $deck = CrabCakes::Model::Deck->new();
-    for ( my $hand = 0 ; $hand < 4 ; $hand++ ) {
-        for ( my $i = 0 ; $i < $self->game_size ; $i++ ) {
-            $self->player($i)->get_crab_cake($hand)
-              ->add_bottom_card( $deck->next_card );
-            $self->player($i)->get_crab_cake($hand)
-              ->add_top_card( $deck->next_card );
-            $self->player($i)->take_card( $deck->next_card );
+    for ( my $card_number = 0 ; $card_number < 4 ; $card_number++ ) {
+        for ( my $player_number = 0 ; $player_number < $self->game_size ; $player_number++ ) {
+
+            my $bottom_card=$deck->next_card;
+            my $top_card=$deck->next_card;
+            my $card=$deck->next_card;
+
+            my $crab_cake=$self->player($player_number)->get_crab_cake( $card_number );
+
+            $crab_cake->add_bottom_card($bottom_card );
+            $crab_cake->add_top_card( $top_card );
+            $self->player($player_number)->take_card( $card );
         }
     }
     $self->pile->cards( $deck->cards() );
@@ -97,7 +103,7 @@ sub can_play_card() {
     my ( $self, %args ) = (@_);
     my $card = $args{card};
     return 
-      $card->can_play_on_top_of $self->discards->top_card 
+      $card->can_play_on_top_of($self->discards->top_card );
 }
 
 sub play_card() {
