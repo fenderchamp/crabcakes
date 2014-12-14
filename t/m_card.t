@@ -22,6 +22,11 @@ my $cm = CrabCakes::Model::Card->new(
     full_name    => 'pholder',
     abbreviation => 'ph'
 );
+
+ok($cm->can('can_play_on_top_of'),'can can_play_on_top_of');
+ok($cm->can('is_greater_or_equal_to'),'can is_greater_or_equal_to');
+#ok($cm->can('is_special'),'can is_special');
+
 isa_ok( $cm, 'CrabCakes::Model::Card' );
 is( $cm->visible_to(), 'nobody', 'visible_to defaulted to nobody' );
 
@@ -46,4 +51,5 @@ my $cm = CrabCakes::Model::Card->new(
     abbreviation => 'ph'
 );
 isa_ok( $cm, 'CrabCakes::Model::Card' );
+
 

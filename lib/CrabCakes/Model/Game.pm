@@ -96,9 +96,8 @@ sub draw_card() {
 sub can_play_card() {
     my ( $self, %args ) = (@_);
     my $card = $args{card};
-    return 1 if ( $card->is_special
-        || $card->greater_than( $self->discards->top_card ) );
-    return 0;
+    return 
+      $card->can_play_on_top_of $self->discards->top_card 
 }
 
 sub play_card() {
