@@ -14,8 +14,9 @@ has 'cards' => (
         _add_card     => 'push',
         _next_card    => 'pop',
         filter_cards => 'grep',
-        get_card     => 'get',
-        size         => 'count',
+        _get_card     => 'get',
+        _delete_card => 'delete',
+        size         => 'count'
     },
 );
 
@@ -34,13 +35,16 @@ has '_by_name'=>(
        _delete_index => 'delete'
     }
 ); 
-
 sub BUILD {
-    my ($self) = @_;
-    $self->index_stack();
 }
 
+after BUILD => sub { 
+    my ($self) = @_;
+    $self->build_stack_index();
+};
+
 sub _build_by_name {
+
     my ($self) = @_;
     my $by_name={};
     my $count=0;
@@ -52,7 +56,7 @@ sub _build_by_name {
     return $by_name;
 }
 
-sub index_stack {
+sub build_stack_index {
     my ($self) = @_;
     $self->_by_name($self->_build_by_name);
     $self->_indexed(1);
@@ -60,16 +64,42 @@ sub index_stack {
 
 sub get_card_by_name {
     my ($self,$card_to_get) = @_;
+
     unless ( $self->_indexed ) {
-      $self->index_stack();
+      $self->build_stack_index();
     }
-    return $self->get_card($self->_get_index($card_to_get));
+    my $card_position=$self->_get_index($card_to_get);
+    return ( undef ) unless ( defined ($card_position) );
+
+    $self->_delete_index($card_to_get);
+    return $self->get_card($card_position);
 }
+
+sub has_card {
+    my ($self,$card_to_get) = @_;
+    unless ( $self->_indexed ) {
+      $self->build_stack_index();
+    }
+    return 0  unless ( defined($self->_get_index($card_to_get)) );
+    return 1;
+}
+
+sub get_card {
+    my ($self,$array_position) = @_;
+    return undef unless ( defined $array_position );
+    my $card = $self->_get_card($array_position);
+    if ( defined($card)) { 
+       $self->_delete_card($array_position);
+    }
+    return $card;
+}
+
 sub add_card {
     my ($self,$card) = @_;
-    $self->add_card();
+    $self->_add_card($card);
     $self->_indexed(0);
 }
+
 sub next_card {
    my ($self)=@_; 
    my $card=$self->_next_card();

@@ -62,11 +62,9 @@ has 'players' => (
 
 sub BUILD {
     my ($self) = @_;
-$DB::single=1;
     my $deck = CrabCakes::Model::Deck->new();
     for ( my $card_number = 0 ; $card_number < 4 ; $card_number++ ) {
         for ( my $player_number = 0 ; $player_number < $self->game_size ; $player_number++ ) {
-
             my $bottom_card=$deck->next_card;
             my $top_card=$deck->next_card;
             my $card=$deck->next_card;
