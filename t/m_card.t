@@ -1,4 +1,6 @@
 use strict;
+use FindBin;
+use lib "$FindBin::Bin/../lib";
 use CrabCakes::Model::Card;
 
 use Test::More 'no_plan';

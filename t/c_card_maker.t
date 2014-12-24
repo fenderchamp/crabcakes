@@ -1,4 +1,8 @@
 use strict;
+
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+
 use CrabCakes::Control::CardMaker;
 
 use Test::More 'no_plan';

@@ -63,7 +63,13 @@ sub _crab_cakes {
 }
 
 sub card_to_crabcake {
-    my ( $self,$card,$crabcake ) = @_;
+    my ( $self,$card_name,$crab_cake_number ) = @_;
+    my $card_from_hand=
+      $self->hand->get_card_by_name($card_name);
+    my $top_card=
+      $self->get_crab_cake($crab_cake_number)->top_card();
+    $self->get_crab_cake($crab_cake_number)->top_card($card_from_hand);
+    $self->hand->add_card($top_card);
 }
 
 sub take_card {

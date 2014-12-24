@@ -1,4 +1,7 @@
 use strict;
+
+use FindBin;
+use lib "$FindBin::Bin/../lib";
 use CrabCakes::Model::Deck;
 use Test::More 'no_plan';
 use Test::Exception;
