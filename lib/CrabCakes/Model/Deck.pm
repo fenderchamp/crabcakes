@@ -32,19 +32,18 @@ sub _build_sorted_deck {
     my $deck = [];
 
     my $cardMaker = CrabCakes::Control::CardMaker->new;
-    foreach my $suit (qw(clubs diamonds)) {
+    foreach my $suit (qw(clubs diamonds hearts spades)) {
         for ( my $number = 2 ; $number <= 14 ; $number++ ) {
-            push @$deck, $cardMaker->card( number => $number, suit => $suit );
-        }
-    }
-
-    foreach my $suit (qw(hearts spades)) {
-        for ( my $number = 14 ; $number >= 2 ; $number-- ) {
             push @$deck, $cardMaker->card( number => $number, suit => $suit );
         }
     }
     return $deck;
 
 }
+
+before add_card=>sub{
+   my ($self,$card)=@_;
+   $card->visible_to('nobody');
+};
 
 1;

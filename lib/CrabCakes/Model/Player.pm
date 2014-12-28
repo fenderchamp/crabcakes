@@ -7,9 +7,6 @@ use Mouse::Util::TypeConstraints;
 enum 'PlayerCounterType'      => ( 0, 1, 2 );
 no Mouse::Util::TypeConstraints;
 
-
-
-
 has '_crab_cakes_count' => (
     is      => 'rw',
     isa     => 'Int',
@@ -51,6 +48,11 @@ has 'ready' => (
     default => sub { return 0}
 );
 
+has 'game_reference' => (
+    is      => 'rw',
+    isa     => 'Object'
+);
+
 sub _crab_cakes {
     my ($self) = @_;
     my $ccs;
@@ -62,19 +64,28 @@ sub _crab_cakes {
 
 }
 
+sub hand_size {
+    my ( $self) = @_;
+    return $self->hand->size;
+} 
+
+sub has_card_in_hand {
+    my ($self,$card_name) = @_;
+    return $self->hand->has_card($card_name);
+} 
+
 sub card_to_crabcake {
     my ( $self,$card_name,$crab_cake_number ) = @_;
     my $card_from_hand=
-      $self->hand->get_card_by_name($card_name);
+      $self->hand->get_card($card_name);
     my $top_card=
       $self->get_crab_cake($crab_cake_number)->top_card();
     $self->get_crab_cake($crab_cake_number)->top_card($card_from_hand);
-    $self->hand->add_card($top_card);
+    $self->add_card($top_card);
 }
 
-sub take_card {
+sub add_card {
     my ( $self, $card ) = @_;
-    $card->visible_to('player');
     $self->hand->add_card($card);
 }
 

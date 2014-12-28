@@ -25,8 +25,9 @@ my $cm = CrabCakes::Model::Card->new(
     abbreviation => 'ph'
 );
 
-ok($cm->can('can_play_on_top_of'),'can can_play_on_top_of');
-ok($cm->can('is_greater_or_equal_to'),'can is_greater_or_equal_to');
+ok( $cm->can('can_play_on_top_of'),     'can can_play_on_top_of' );
+ok( $cm->can('is_greater_or_equal_to'), 'can is_greater_or_equal_to' );
+
 #ok($cm->can('is_special'),'can is_special');
 
 isa_ok( $cm, 'CrabCakes::Model::Card' );
@@ -53,5 +54,4 @@ my $cm = CrabCakes::Model::Card->new(
     abbreviation => 'ph'
 );
 isa_ok( $cm, 'CrabCakes::Model::Card' );
-
 

@@ -5,8 +5,8 @@ use CrabCakes::Model::Deck;
 use CrabCakes::Model::Discards;
 use CrabCakes::Model::Pile;
 use CrabCakes::Model::Player;
+use Session::Token;
 
-use CrabCakes::Model::Player;
 
 use Mouse::Util::TypeConstraints;
 enum 'GameSizeType' => ( 2, 3 );
@@ -46,6 +46,14 @@ has 'pile' => (
     default => sub { CrabCakes::Model::Pile->new() }
 );
 
+has 'number' => (
+    is      => 'rw',
+    isa     => 'Session::Token',
+    default =>  sub { 
+         return Session::Token->new(length => 24)
+    }
+);
+
 has 'players' => (
     traits  => ['Array'],
     is      => 'rw',
@@ -73,7 +81,7 @@ sub BUILD {
 
             $crab_cake->add_bottom_card($bottom_card );
             $crab_cake->add_top_card( $top_card );
-            $self->player($player_number)->take_card( $card );
+            $self->player($player_number)->add_card( $card );
         }
     }
     $self->pile->cards( $deck->cards() );
@@ -86,7 +94,7 @@ sub _players {
     my $players;
     while ( $counter < $self->game_size ) {
         push @$players,
-          CrabCakes::Model::Player->new( player_counter => $counter );
+          CrabCakes::Model::Player->new( player_counter => $counter,game_ref=>$self );
         $counter++;
     }
     return $players;

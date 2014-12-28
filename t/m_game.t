@@ -16,7 +16,6 @@ isa_ok( $game->player(0), 'CrabCakes::Model::Player', 'first player Found' );
 isa_ok( $game->player(1), 'CrabCakes::Model::Player', 'second player Found' );
 ok( !$game->player(2), 'no third player found' );
 
-
 # 3 player game
 my $game = new_game( game_size => 3 );
 is( $game->player_count, 3, 'three players by default' );
@@ -59,7 +58,7 @@ foreach my $player_number ( 0, 1 ) {
         isa_ok( $card, 'CrabCakes::Model::Card',
             "player:$player_number card:$count is a card" );
         is( $card->visible_to, 'player',,
-            "player:$player_number card:$count visible to playerd" );
+            "player:$player_number card:$count visible to player" );
     }
     is( $count, 4, 'examined 4 cards for player:$player_number' );
     is( $player->crab_cakes_count, 4, "$player_number has 4 crab cakes" );
