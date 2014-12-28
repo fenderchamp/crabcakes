@@ -38,6 +38,13 @@ has 'game_size' => (
     default => sub { return 2 }
 );
 
+has 'deck' => (
+    is      => 'rw',
+    isa     => 'CrabCakes::Model::Deck',
+    lazy    => 1,
+    default => sub { CrabCakes::Model::Deck->new() }
+);
+
 has 'pile' => (
     is      => 'rw',
     isa     => 'CrabCakes::Model::Pile',
@@ -69,7 +76,7 @@ has 'players' => (
 
 sub BUILD {
     my ($self) = @_;
-    my $deck = CrabCakes::Model::Deck->new();
+    my $deck = $self->deck();
     for ( my $card_number = 0 ; $card_number < 4 ; $card_number++ ) {
         for (
             my $player_number = 0 ;
@@ -89,8 +96,6 @@ sub BUILD {
             $self->player($player_number)->add_card($card);
         }
     }
-    $self->pile->cards( $deck->cards() );
-
 }
 
 sub _players {

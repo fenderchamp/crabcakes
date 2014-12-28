@@ -74,6 +74,13 @@ sub has_card_in_hand {
     return $self->hand->has_card($card_name);
 }
 
+sub draw_new_card {
+    my ($self) = @_;
+    return unless ( $self->game_reference );
+    return unless ( $self->hand_size < $self->hand->minimum_size );
+    $self->add_card( $self->game->deck->next_card() );
+}
+
 sub card_to_crabcake {
     my ( $self, $card_name, $crab_cake_number ) = @_;
     my $card_from_hand = $self->hand->get_card($card_name);
@@ -85,6 +92,24 @@ sub card_to_crabcake {
 sub add_card {
     my ( $self, $card ) = @_;
     $self->hand->add_card($card);
+}
+
+sub play_card {
+    my ( $self, $card_name ) = @_;
+
+    return unless ( $self->game_reference );
+
+    my $card_from_hand = $self->hand->get_card($card_name);
+    my $top_card       = $self->game_reference->pile->top_card();
+    if ( $card_from_hand->can_play_on_top_of($top_card) ) {
+        $self->game_reference->pile->add_card($card_from_hand);
+        $self->draw_new_card();
+    }
+    else {
+        $self->add_card($card_from_hand);
+        $self->game_reference->pile->add_card($top_card);
+    }
+
 }
 
 1;

@@ -3,6 +3,14 @@ package CrabCakes::Model::Hand;
 use Mouse;
 with 'CrabCakes::Model::StackOCards';
 
+my $MIN_HAND_SIZE = 4;    #hand size below which to draw
+
+has minimum_size => (
+    is      => 'rw',
+    isa     => 'Int',
+    default => sub { return $MIN_HAND_SIZE }
+);
+
 sub _new_stack {
     my ($self) = @_;
     my @a;
@@ -11,10 +19,6 @@ sub _new_stack {
 
 before add_card => sub {
     my ( $self, $card ) = @_;
-    unless ($card) {
-
-        $DB::single = 1;
-    }
     $card->visible_to('player');
 };
 

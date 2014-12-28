@@ -36,16 +36,16 @@ is( $game->discards->size, 0, 'no discarded cards found' );
 
 my $game = new_game();
 is( $game->player_count, 2, 'two players by default' );
-isa_ok( $game->pile, 'CrabCakes::Model::Pile', 'draw_from_stack pile Found' );
-is( $game->pile->size, 28, '28  cards to draw from' );
+isa_ok( $game->deck, 'CrabCakes::Model::Deck', 'draw_from_stack pile Found' );
+is( $game->deck->size, 28, '28  cards to draw from' );
 
 my %visibles;
-foreach my $card ( $game->pile->all_cards() ) {
+foreach my $card ( $game->deck->all_cards() ) {
     $visibles{ $card->visible_to }++;
 }
 
-is( $visibles{nobody},         28, '28 cards in pile visible to nobody' );
-is( scalar( keys(%visibles) ), 1,  '28 all in pile visible to nobody' );
+is( $visibles{nobody},         28, '28 cards in deck visible to nobody' );
+is( scalar( keys(%visibles) ), 1,  '28 all in deck visible to nobody' );
 
 foreach my $player_number ( 0, 1 ) {
     my $player = $game->player($player_number);
