@@ -4,7 +4,7 @@ use CrabCakes::Model::CrabCake;
 use Mouse;
 
 use Mouse::Util::TypeConstraints;
-enum 'PlayerCounterType'      => ( 0, 1, 2 );
+enum 'PlayerCounterType' => ( 0, 1, 2 );
 no Mouse::Util::TypeConstraints;
 
 has '_crab_cakes_count' => (
@@ -45,12 +45,12 @@ has 'ready' => (
     is      => 'rw',
     isa     => 'Bool',
     lazy    => 1,
-    default => sub { return 0}
+    default => sub { return 0 }
 );
 
 has 'game_reference' => (
-    is      => 'rw',
-    isa     => 'Object'
+    is  => 'rw',
+    isa => 'Object'
 );
 
 sub _crab_cakes {
@@ -65,21 +65,19 @@ sub _crab_cakes {
 }
 
 sub hand_size {
-    my ( $self) = @_;
+    my ($self) = @_;
     return $self->hand->size;
-} 
+}
 
 sub has_card_in_hand {
-    my ($self,$card_name) = @_;
+    my ( $self, $card_name ) = @_;
     return $self->hand->has_card($card_name);
-} 
+}
 
 sub card_to_crabcake {
-    my ( $self,$card_name,$crab_cake_number ) = @_;
-    my $card_from_hand=
-      $self->hand->get_card($card_name);
-    my $top_card=
-      $self->get_crab_cake($crab_cake_number)->top_card();
+    my ( $self, $card_name, $crab_cake_number ) = @_;
+    my $card_from_hand = $self->hand->get_card($card_name);
+    my $top_card       = $self->get_crab_cake($crab_cake_number)->top_card();
     $self->get_crab_cake($crab_cake_number)->top_card($card_from_hand);
     $self->add_card($top_card);
 }

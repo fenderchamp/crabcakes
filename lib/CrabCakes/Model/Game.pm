@@ -7,7 +7,6 @@ use CrabCakes::Model::Pile;
 use CrabCakes::Model::Player;
 use Session::Token;
 
-
 use Mouse::Util::TypeConstraints;
 enum 'GameSizeType' => ( 2, 3 );
 no Mouse::Util::TypeConstraints;
@@ -49,8 +48,8 @@ has 'pile' => (
 has 'number' => (
     is      => 'rw',
     isa     => 'Session::Token',
-    default =>  sub { 
-         return Session::Token->new(length => 24)
+    default => sub {
+        return Session::Token->new( length => 24 );
     }
 );
 
@@ -72,16 +71,22 @@ sub BUILD {
     my ($self) = @_;
     my $deck = CrabCakes::Model::Deck->new();
     for ( my $card_number = 0 ; $card_number < 4 ; $card_number++ ) {
-        for ( my $player_number = 0 ; $player_number < $self->game_size ; $player_number++ ) {
-            my $bottom_card=$deck->next_card;
-            my $top_card=$deck->next_card;
-            my $card=$deck->next_card;
+        for (
+            my $player_number = 0 ;
+            $player_number < $self->game_size ;
+            $player_number++
+          )
+        {
+            my $bottom_card = $deck->next_card;
+            my $top_card    = $deck->next_card;
+            my $card        = $deck->next_card;
 
-            my $crab_cake=$self->player($player_number)->get_crab_cake( $card_number );
+            my $crab_cake =
+              $self->player($player_number)->get_crab_cake($card_number);
 
-            $crab_cake->add_bottom_card($bottom_card );
-            $crab_cake->add_top_card( $top_card );
-            $self->player($player_number)->add_card( $card );
+            $crab_cake->add_bottom_card($bottom_card);
+            $crab_cake->add_top_card($top_card);
+            $self->player($player_number)->add_card($card);
         }
     }
     $self->pile->cards( $deck->cards() );
@@ -94,7 +99,10 @@ sub _players {
     my $players;
     while ( $counter < $self->game_size ) {
         push @$players,
-          CrabCakes::Model::Player->new( player_counter => $counter,game_ref=>$self );
+          CrabCakes::Model::Player->new(
+            player_counter => $counter,
+            game_ref       => $self
+          );
         $counter++;
     }
     return $players;
@@ -108,8 +116,7 @@ sub draw_card() {
 sub can_play_card() {
     my ( $self, %args ) = (@_);
     my $card = $args{card};
-    return 
-      $card->can_play_on_top_of($self->discards->top_card );
+    return $card->can_play_on_top_of( $self->discards->top_card );
 }
 
 sub play_card() {

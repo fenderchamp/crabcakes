@@ -41,9 +41,9 @@ sub _build_sorted_deck {
 
 }
 
-before add_card=>sub{
-   my ($self,$card)=@_;
-   $card->visible_to('nobody');
+before add_card => sub {
+    my ( $self, $card ) = @_;
+    $card->visible_to('nobody');
 };
 
 1;
