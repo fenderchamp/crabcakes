@@ -87,7 +87,6 @@ function Board(options) {
 				var cards=getCards(srcDeck);
 				for(var i=cards.length-1;i>=0;i--) {
 					try {
-						console.log(cards[i]);
 						getDeck(srcDeck).remove(cards[i]);
 						deck.addTop(cards[i]);
 					} catch(e) {
