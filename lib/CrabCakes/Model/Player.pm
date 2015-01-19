@@ -1,8 +1,8 @@
 package CrabCakes::Model::Player;
 use CrabCakes::Model::Hand;
 use CrabCakes::Model::CrabCake;
+use Session::Token;
 use Mouse;
-
 use Mouse::Util::TypeConstraints;
 enum 'PlayerCounterType' => ( 0, 1, 2 );
 no Mouse::Util::TypeConstraints;
@@ -41,10 +41,23 @@ has player_counter => (
     required => 1
 );
 
-has 'ready' => (
+has 'id' => (
+    is      => 'rw',
+    isa     => 'Session::Token',
+    default => sub {
+        return Session::Token->new( length => 24 );
+    }
+);
+
+has 'joined' => (
     is      => 'rw',
     isa     => 'Bool',
-    lazy    => 1,
+    default => sub {  return 0 }
+);
+
+has 'played' => (
+    is      => 'rw',
+    isa     => 'Bool',
     default => sub { return 0 }
 );
 

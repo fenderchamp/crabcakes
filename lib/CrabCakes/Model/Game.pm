@@ -52,7 +52,7 @@ has 'pile' => (
     default => sub { CrabCakes::Model::Pile->new() }
 );
 
-has 'number' => (
+has 'id' => (
     is      => 'rw',
     isa     => 'Session::Token',
     default => sub {
@@ -134,17 +134,8 @@ sub discard_pile() {
     my ( $self, %args ) = (@_);
 }
 
-sub both_players_ready {
-    my ($self) = @_;
-    for my $player ( $self->all_players ) {
-        return 0 unless $player->ready_to_play();
-    }
-    return 1;
-}
-
 sub _find_starting_player {
     my ( $self, %args ) = (@_);
-    return -1 unless ( $self->both_players_ready() );
     my $lowest = 15;
     my $count  = 0;
     my $lowest_player;

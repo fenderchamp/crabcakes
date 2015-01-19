@@ -28,4 +28,18 @@ template: "simple"
 
 # For session support enable the following line and see Dancer::Session
 # session: "YAML"
+plugins:
+    Mongo:
+        host: "localhost"
+        port: "27017"
+        db_name: "crabcakes"
+        #username:
+        #password:
+        #w:
+        #wtimeout:
+        #auto_reconnect:
+        #auto_connect:
+        #timeout:
+        #query_timeout:
+        #find_master:
 

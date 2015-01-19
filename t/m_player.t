@@ -8,6 +8,8 @@ use CrabCakes::Model::Deck;
 
 my $player = CrabCakes::Model::Player->new( player_counter => 0 );
 isa_ok( $player, 'CrabCakes::Model::Player', 'player created' );
+is( $player->played, 0, 'player not ready' );
+is( $player->joined, 0, 'player no joined' );
 is( $player->crab_cakes_count, 4, 'count 4' );
 isa_ok( $player->crab_cakes, 'ARRAY', 'crab_cakes is an ARRAY' );
 
@@ -32,7 +34,6 @@ isa_ok( $cc, 'CrabCakes::Model::CrabCake', 'pulled 0 crab_cake' );
 is( $player->crab_cakes_count, 4, 'count 4' );
 
 isa_ok( $player->hand, 'CrabCakes::Model::Hand', 'empty hand' );
-is( $player->ready, 0, 'player not ready by default' );
 ok( $player->can('card_to_crabcake'), 'player can card_to_crabcake' );
 
 my $deck = CrabCakes::Model::Deck->new();
