@@ -1,95 +1,76 @@
 /**
  * A game of Crabcakes Allison's Friend's Cousin's game
  */
-function CrabCakes() {
+function CrabCakes(args) {
 
-    var board = new Board({
+    var number_of_players=args.number_of_players;  
+
+    this.board = new Board({
         rootId : "DivCrabCakes",
-        magicalX : 106
+        magicalX : 80,
+        magicalY : 110
     });
 
-    var totalDeck = new Deck(board.collapsedType, 3, 0, {
-        filter : function () { return false; }, //never let someone drag a card to the deck
-        draggable : false
-    });
-    totalDeck.initialize(true);
-    
-    var discard = new Deck(board.collapsedType, 1, 0, { 
-		filter : function(card) { return false; } //never let someone drag a card to the discard pile
-	});
-    board.addDeck(discard);
-    
-    totalDeck.shuffle();
-    totalDeck.setAction(function () {
-        var top = totalDeck.peek();
 
-        if (!top) {
-            discard.deal(totalDeck, discard.getCards().length, true);
-        } else {
-            top.setFaceUp(true);
-            totalDeck.remove(top);
-            discard.addTop(top);
+    this.drawPlayer=function(args)  {
+
+        var player =args.player;
+        var position = args.position;
+
+        var board=this.board;
+
+        var crabCakesRow = 1; 
+        var handRow = 0; 
+        var ccStart;
+        if ( position === 'south' ) { 
+           crabCakesRow = 3; 
+           handRow = 4; 
         }
-    });
-    board.addDeck(totalDeck);
-
-    var pile;
-    var endPiles = [];
-    
-    for (var i = 1; i <= 7; i++) {
-        pile = new Deck(board.defaultType, i - 1, 1);
-        totalDeck.deal(pile, i, true);
-
-        var topCard = pile.peek();
-        if (topCard) {
-            topCard.setFaceUp(true);
-        }
-
-        pile.setFilter((function (pile) {
-             return function (card) {
-                 var top = pile.peek();
-				 
-                if (top) {
-                    return (top.getColor() != card.getColor()) &&
-                        top.getRank() - card.getRank() ==1;
-                } else {
-                    return card.getRank() == 13;
-                }
-            };
-        })(pile));
-
-        // Flip the top card if needed:
-        pile.observe((function (pile) {
-            return function (event) {
-                if (event.type == "remove") {
-                    if (pile.peek()) {
-                        pile.peek().setFaceUp(true);
-                    }
-                }
-            };
-        })(pile));
         
-        board.addDeck(pile);
-    }
-    
-    for (i = 0; i < 4; i++) {
-        endPiles[i] = new Deck(board.collapsedType, 3 + i, 0);
-        board.addDeck(endPiles[i]);
-        endPiles[i].setFilter((function (pile) {
-            return function (card, deck, size) {
-                if (size > 1) {
-                    return false;
-                }
-                
-                var top = pile.peek();
+        var board=this.board;
+        var hand = new Deck(board.horizontalType, 2, handRow);
+        var crabCakes=[];
 
-                if (top) {
-                    return (top.getSuit() == card.getSuit()) &&
-                        (card.getRank() - top.getRank() == 1);
-                } else {
-                    return card.getRank() == 1;
-                }
-            };
-        })(endPiles[i]));
+    	for (i = 0; i < 4; i++) {
+            crabCakes[i] = new Deck(board.collapsedType, (i+1) , crabCakesRow);
+            board.addDeck(crabCakes[i]);
+         }
+         board.addDeck(hand);
+    };
+
+
+    if ( number_of_players === 2 ) {
+
+       this.drawPlayer({
+			 player:0,
+			 position:'south'
+       });
+       this.drawPlayer({
+			player:1,
+			position:'north'
+       });
+     } else if ( number_of_players === 3 ) {
+       this.drawPlayer({
+			 player:0,
+			 position:'south'
+       });
+       this.drawPlayer({
+			 player:1,
+ 			 position:'west'
+       });
+       this.drawPlayer({
+			 player:2,
+ 			 position:'east'
+       });
     }
+
+    var deck = new Deck(this.board.collapsedType, 1, 2);
+    var pile = new Deck(this.board.collapsedType, 2, 2);
+    var discards = new Deck(this.board.collapsedType, 4, 2);
+    this.board.addDeck(deck);
+    this.board.addDeck(pile);
+    this.board.addDeck(discards);
+
+
 }
+

@@ -45,6 +45,6 @@ sub get_database {
    return  CrabCakes::Control::MongoDb->new(
       database => mongo->get_database('crabcakes')
    );
-}
+};
 
 true;
