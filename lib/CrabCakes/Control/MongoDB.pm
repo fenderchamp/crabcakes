@@ -1,9 +1,9 @@
-package CrabCakes::Control::MongoDb;
-
-package CrabCakes::Model::Game;
-
+package CrabCakes::Control::MongoDB;
 
 use Mouse;
+
+use CrabCakes::Model::Game;
+
 
 has database => ( 
    is => 'ro', 
@@ -53,6 +53,19 @@ sub find_pending_game {
    my $key='pending_'.$args{game_size};
    my $game_json=$database->collection->find_one({id=>$key});
    return $game_json;
+}
+
+sub delete_pending_game {
+
+   my ($self,%args)=@_;
+   my $game_size=$args{game_size};
+
+   my $database=$self->database;
+
+   my $key='pending_'.$args{game_size};
+   $database->collection->remove({$key});
+   return $game_json;
+
 }
 
 1;
