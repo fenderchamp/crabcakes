@@ -7,11 +7,15 @@ use Dancer::Plugin::Mongo;
 
 our $VERSION = '0.1';
 
+get '/' => sub {
+    template 'index';
+};
+
 get '/help' => sub {
     template 'index';
 };
 
-get '/' => sub {
+get '/crabcakes' => sub {
     send_file '/crabcakes.html'
 };
 

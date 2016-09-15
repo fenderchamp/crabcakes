@@ -28,6 +28,3 @@ my $three_player_game=CrabCakes::Model::Game->new(game_size=>3);
 isa_ok($three_player_game,'CrabCakes::Model::Game','three player game');
 
 my $c_database=CrabCakes::Control::MongoDB->new(database=>$database);
-
-isa_ok($c_database, 'CrabCakes::Control::MongoDB','created CrabCakes::Control::MongoDB');
-

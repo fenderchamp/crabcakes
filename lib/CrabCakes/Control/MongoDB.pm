@@ -43,7 +43,7 @@ sub save_pending_game {
 
 }
 
-sub find_pending_game {
+sub has_pending_game {
 
    my ($self,%args)=@_;
    my $game_size=$args{game_size};

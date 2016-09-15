@@ -22,10 +22,7 @@ sub find_game {
 
    my ($self,%args)=@_;
 
-
-   if ( ) {
-
-
+   if ( 0 ) {
    } else {
       my $self->game(CrabCakes::Model::Game->new(game_size=>$args{game_size}));
    }
