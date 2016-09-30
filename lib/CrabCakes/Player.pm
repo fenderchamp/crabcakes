@@ -66,6 +66,22 @@ sub add_card {
     $self->hand->add_card($card);
 }
 
+sub get_card {
+    my ( $self, $card ) = @_;
+    my $hand=$self->hand;
+
+    if ( $hand->size ) {
+       return $hand->get_card($card);
+    } else {
+       for my $crabcake ( $self->crabcakes  ) {
+          my $card =$crabcake->see_card($card);
+          if ( $card->is_visible ) {
+              return $crabcake->get_card($card->abbreviation);
+           }
+       }
+    }
+}
+
 sub hand_size {
     my ($self) = @_;
     return $self->hand->size;

@@ -7,19 +7,14 @@ use CrabCakes::Deck;
 use CrabCakes::Discards;
 use CrabCakes::Player;
 use CrabCakes::Error::AllPlayersNotReady;
+use CrabCakes::Turn;
+
 use Session::Token;
 use Try::Tiny;
 
 use Moose::Util::TypeConstraints;
 enum 'GameSizeType' => [ ( 2, 3 ) ];
 no Moose::Util::TypeConstraints;
-
-#has starting_player => (
-#    is      => 'rw',
-#    isa     => 'Str',
-#    lazy    => 1,
-#    builder => '_find_starting_player'
-#);
 
 has 'discards' => (
     is      => 'rw',
@@ -32,8 +27,19 @@ has 'game_size' => (
     is      => 'rw',
     isa     => 'GameSizeType',
     lazy    => 1,
-    default => sub { return 2 }
+    default => sub { 2 }
 );
+
+has 'turns_taken' => (
+    is      => 'rw',
+    isa     => 'Int',
+    default => sub { 0 }
+);
+
+has 'turn' => (
+    is      => 'rw',
+    isa     => 'CrabCakes::Turn'
+}
 
 has 'deck' => (
     is      => 'rw',
@@ -63,6 +69,7 @@ has 'players' => (
         player       => 'get'
     },
 );
+
 
 sub can_start_gameplay {
     my ($self) = @_;
@@ -95,8 +102,8 @@ sub get_player_whos_turn_it_is {
 }
 
 sub get_player_by_counter {
-    my ($self) = @_;
-    return [ grep { $_->is_turn } $self->all_players ];
+    my ($self,$counter) = @_;
+    return [ grep { $_->player_counter == $counter } $self->all_players ];
 }
 
 sub BUILD {
@@ -146,9 +153,11 @@ sub _players {
     return $players;
 }
 
+
 sub draw_card() {
     my ( $self, %args ) = (@_);
-    my $player = $args{player};
+    my $player_id = $args{id};
+    my $player = $self->get_player_by_id($player_id); 
 }
 
 sub can_play_card() {
@@ -157,18 +166,57 @@ sub can_play_card() {
     return $card->can_play_on_top_of( $self->discards->top_card );
 }
 
-sub play_card() {
+sub take_turn() {
     my ( $self, %args ) = (@_);
-    my $player_position = $args{player};
 
-    #my $card   = $args{card};
-    #if ( $player
-    #   $self->discards->add_card();
-    #}
+    my $player_id = $args{id};
+
+    my $player = $self->get_player_whos_turn_it_is();
+    unless ( $player->id eq $id ) {
+      die 'invalid player for turn';
+    }
+
+    my $turn=>self->turn();
+    unless ( $turn ) {
+      $turn = CrabCakes::Turn->new();
+      $self->turn(turn);
+    }
+
+    if ( $turn->progress == $turn->INIT ) {
+       $player->perhaps_flip_crabcakes();
+       $player->draw_card();
+       unless ( $player->has_card_to_play ) {
+         $self->give_player_all_the_discards();
+       }
+    } elsif ( $turn->progress == $turn->DREW ) {
+       $player->play_card($card);
+       if ( $card->is_special ) {
+          return;
+       }
+    } elsif ( $turn->progress == $turn->PLAYED ) {
+       $player->perhaps_flip_crabcakes();
+       $self->switch_player_turns;
+       $turn->progress($turn->INIT);
+    }
+    $turn->step_completed();
+
 }
 
+sub play_card() {
+    my ( $self, %args ) = (@_);
+
+    my $player_id = $args{id};
+    my $card = $args{card};
+
+    my $player = $self->get_player_by_id($player_id); 
+    if ( $player->has_card_in_hand($card) && $self->can_play_card ) {
+        $self->discards->add_card($player->hand->get_card);
+    }
+};
+    
 sub discard_pile() {
     my ( $self, %args ) = (@_);
+
 }
 
 sub player_with_the_most {
@@ -220,8 +268,6 @@ sub starting_player {
                 $number = $lowest_card_held->number;
                 last unless ( $lowest_card_held->is_special );
             }
-
-    #push @{$held_cards{$lowest_card_held->number}}, $player->id if ( $number );
             push @{ $held_cards{$number} }, $player->id if ($number);
         }
 
@@ -249,10 +295,29 @@ sub starting_player {
 
 }
 
-sub _json_fields {
-    return
-      qw (starting_player discards game_size deck id players ready_players);
-}
+#sub all_cards {
+#    my ( $self ) = @_;
+#
+#    my $all_cards; 
+#    for $card in ( $deck->cards ) { 
+#
+#        push @all_cards, CrabCakes::CardForMessage->new( 
+#           $card, 
+#           possessed_by=>'deck'
+#        );
+#
+#    }
+#    #my $top_card=$self->discards->top_card();
+#    #$i, $card in ( $discard->cards ) { 
+#    #    push @all_cards, $card;
+#    #}
+#    #for my $player, $self->players
+#   
+#}
+
+#sub { return qw (starting_player discards game_size deck id players ready_players all_cards); }
+
+sub _json_fields { qw (starting_player discards game_size deck id players ready_players ); }
 
 1;
 

@@ -67,6 +67,10 @@ ok( $game->can('starting_player'), 'starting_player attribute found' );
 
 is( $game->starting_player, $player1->id, "starting player is player1" );
 
+$game->pretty(1);
+my $string = $game->to_json;
+print "$string\n";
+
 done_testing();
 
 sub new_game {
