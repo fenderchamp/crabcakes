@@ -1,0 +1,96 @@
+
+
+/* creates a game starts a game, returns the full card layout */
+
+post /crabcakes/new
+     players = (2|3); default (2);
+
+{
+
+  id: 123
+  cards {
+         name { 
+            location: (cc1|cc2|cc3|cc4|hand|drawpile|discardpile), 
+            position: (0..n), 
+            visibility: (player|nobody|everybody),
+            player: (0..n),
+            readable: (true|false)
+         } 
+   }
+   turns: 0
+}
+
+
+/* switches a card from hand to crabcake*/
+post /crabcakes/123/switch/handCard(AH)/CrabCake Card(QS)
+{
+  id: 123
+  cards {
+         name...
+   }
+   turns: 0
+}
+
+/* indicates a player is done */
+post /crabcakes/123/ready/1{player number}
+{
+  id: 123
+  cards {
+         name...
+   }
+   turns: 1, /* incremented */
+   player_turn: 1 /* next players turn */ 
+}
+
+/* first play is made automatically when the last player is ready.
+
+post /crabcakes/123/turn/player/card
+...
+
+
+
+
+
+
+
+
+
+
+
+
+/war/new/2
+
+/war/new
+{ 
+  id: 123,  
+  total_players: 2
+  pile: [],
+  {
+    [
+      [26:2h],
+      [26:2s]
+    ]
+  }
+}
+
+/war/123/next
+{
+  {
+    total_players: 2
+    pile: [2H,2S],
+    [
+      [25:QS],
+      [25:2C]
+    ]
+  }
+}
+
+/war/123/next
+{
+    total_players: 2
+    pile: [],
+    [27:6S],
+    [24:7C]
+}
+
+
