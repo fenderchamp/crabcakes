@@ -9,7 +9,7 @@ requires '_json_fields';
 has pretty => (
     is      => 'rw',
     isa     => 'Bool',
-    default => sub { 0 } 
+    default => sub { 0 }
 );
 
 has json_xs => (
@@ -59,6 +59,7 @@ sub to_json {
         }
     }
     return $data if ($raw);
+
     #return $self->json_xs->encode($data);
     return $self->json_xs->pretty(1)->encode($data);
 }

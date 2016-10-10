@@ -22,46 +22,11 @@ has 'cards' => (
         _delete_card    => 'delete',
         filter_cards    => 'grep',
         _get_card       => 'get',
-        _next_card      => 'pop',
+        next_card       => 'pop',
         size            => 'count',
         sort_cards      => 'sort',
     },
 );
-
-has '_indexed' => (
-    is      => 'rw',
-    isa     => 'Bool',
-    default => sub { return 0 }
-);
-
-has '_by_name' => (
-    traits  => ['Hash'],
-    is      => 'rw',
-    isa     => 'HashRef',
-    handles => {
-        _get_index    => 'get',
-        _delete_index => 'delete'
-    }
-);
-
-sub BUILD {
-}
-
-after BUILD => sub {
-    my ($self) = @_;
-    $self->build_stack_index() if ( $self->size );
-};
-
-before [qw(get_card has_card how_many_of)] => sub {
-    my ($self) = @_;
-    $self->build_stack_index()
-      unless ( $self->_indexed );
-};
-
-after [qw(add_card add_bottom_card get_card_by_position)] => sub {
-    my ($self) = @_;
-    $self->_indexed(0);
-};
 
 sub _new_stack {
     my ($self) = @_;
@@ -69,46 +34,26 @@ sub _new_stack {
     return \@a;
 }
 
-sub _build_by_name {
-    my ($self)  = @_;
-    my $by_name = {};
-    my $count   = 0;
-    for my $card ( $self->all_cards ) {
-        $by_name->{ $card->abbreviation } = $count;
-        push @{ $by_name->{ $card->number } }, $card->suit;
-        $count++;
-    }
-    $self->_indexed(1);
-    return $by_name;
-}
-
-sub build_stack_index {
-    my ($self) = @_;
-    Cards::Error::NoCards->new()->throw() unless ( $self->size );
-    $self->_by_name( $self->_build_by_name );
-}
-
 sub get_card {
     my ( $self, $card_to_get ) = @_;
 
     $card_to_get = uc($card_to_get);
 
-    my $card_position = $self->_get_index($card_to_get);
-    Cards::Error::NotFound->new->throw() unless ( defined($card_position) );
-
-    $self->_delete_index($card_to_get);
-    return $self->get_card_by_position($card_position);
+    my ( $card, $position ) = $self->_card_and_position($card_to_get);
+    Cards::Error::NotFound->new->throw() unless ( defined($card) );
+    $self->_delete_card($position);
+    return $card;
 }
 
 sub bottom_card {
     my ( $self, $card ) = @_;
-    $DB::single = 1;
+
+    #Cards::Error::NoCards->new()->throw() unless ( $self->size );
     if ($card) {
         $self->add_bottom_card($card);
     }
     else {
         return $self->cards->[0] if ( $self->size );
-        Cards::Error::NotFound->throw();
     }
 }
 
@@ -119,40 +64,50 @@ sub add_top_card {
 
 sub top_card {
     my ( $self, $card ) = @_;
+
+    #Cards::Error::NoCards->new()->throw() unless ( $self->size );
     if ($card) {
         $_[0]->add_card($card);
     }
     else {
         return $self->cards->[ $self->size - 1 ] if ( $self->size );
-        Cards::Error::NotFound->throw();
     }
 }
 
 sub has_card {
     my ( $self, $card_to_get ) = @_;
-    Cards::Error::NotFound->throw()
-      unless ( defined( $self->_get_index($card_to_get) ) );
-    return 1;
+    my $found = $self->_find_cards($card_to_get);
+    return $found;
 }
 
-sub get_card_by_position {
-    my ( $self, $array_position ) = @_;
-    Cards::Error::NotFound->throw() unless ( defined $array_position );
-    my $card = $self->_get_card($array_position);
-    if ( defined($card) ) {
-        $self->_delete_card($array_position);
+sub _find_cards {
+    my ( $self, $card_to_get ) = @_;
+    $card_to_get = uc($card_to_get);
+
+    Cards::Error::NotFound->throw("no card not found") unless ($card_to_get);
+    if ( $card_to_get =~ /^\d{1,2}$/ ) {
+        return grep { $_->number eq $card_to_get } $self->all_cards;
     }
-    return $card;
+    elsif ( $card_to_get =~ /^([2-9AKQJ0]|10)[HDCS]$/i ) {
+        my ( $card, $position ) = $self->_card_and_position($card_to_get);
+        return ($card);
+    }
+
 }
 
-sub next_card {
-    my ($self) = @_;
+sub _card_and_position {
+    my ( $self, $card_to_get ) = @_;
 
-    #Cards::Error::NoCards->throw() unless ( $self->size );
+    Cards::Error::NoCards->new()->throw() unless ( $self->size );
 
-    my $card = $self->_next_card();
-    $self->_delete_index( $card->abbreviation ) if ($card);
-    return $card;
+    for ( my $i = 0 ; $i < $self->size ; $i++ ) {
+        my $card_found = $self->_get_card($i);
+        return ( $card_found, $i )
+          if ( $card_found->abbreviation eq $card_to_get );
+    }
+
+    Cards::Error::NotFound->throw("${card_to_get} not found");
+
 }
 
 sub face_card_value {
@@ -163,11 +118,10 @@ sub face_card_value {
 
 sub how_many_of {
     my ( $self, $number ) = @_;
-    $number = $self->face_card_value($number);
 
-    #in the by name index we also store the count cards by number
-    return @{ $self->_get_index($number) } if ( $self->_get_index($number) );
-    return 0;
+    $number = $self->face_card_value($number);
+    return scalar( $self->_find_cards($number) );
+
 }
 
 sub lowest_number {

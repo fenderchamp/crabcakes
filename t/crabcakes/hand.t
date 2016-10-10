@@ -5,18 +5,18 @@ use lib "$FindBin::Bin/../../t/lib";
 
 use Test::Cards::JSON qw(copy_by_json);
 
-use CrabCakes::Discards;
+use CrabCakes::Hand;
 use Test::More;
 use Test::Exception;
 
 #buddha — 'Holding onto anger is like drinking poison and expecting the other person to die.'
 
-my $discards = CrabCakes::Discards->new();
+my $hand = CrabCakes::Hand->new();
 
-is( $discards->size, 0, '0 in the deck' );
-isa_ok( $discards->cards, 'ARRAY', 'empty ...really I prefere Barney Fife' );
+is( $hand->size, 0, '0 in the deck' );
+isa_ok( $hand->cards, 'ARRAY', 'empty ...really I prefere Barney Fife' );
 
-my $new = copy_by_json($discards);
+my $new = copy_by_json($hand);
 
 done_testing();
 

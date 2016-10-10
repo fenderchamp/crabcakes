@@ -68,17 +68,18 @@ sub add_card {
 
 sub get_card {
     my ( $self, $card ) = @_;
-    my $hand=$self->hand;
+    my $hand = $self->hand;
 
     if ( $hand->size ) {
-       return $hand->get_card($card);
-    } else {
-       for my $crabcake ( $self->crabcakes  ) {
-          my $card =$crabcake->see_card($card);
-          if ( $card->is_visible ) {
-              return $crabcake->get_card($card->abbreviation);
-           }
-       }
+        return $hand->get_card($card);
+    }
+    else {
+        for my $crabcake ( $self->crabcakes ) {
+            my $card = $crabcake->see_card($card);
+            if ( $card->is_visible ) {
+                return $crabcake->get_card( $card->abbreviation );
+            }
+        }
     }
 }
 
@@ -124,6 +125,44 @@ sub card_count {
         #TODO tonight hold my self tight
     }
     return $count;
+}
+
+sub perhaps_flip_crabcakes {
+    my ($self) = @_;
+    return if $self->hand->size;
+    my $visible;
+    my $cards = 0;
+    for my $crabcake ( $self->crabcakes ) {
+        for my $card ( $crabcake->all_cards ) {
+            $cards++;
+            $visible++ if ( $card->visible_to eq 'everybody' );
+        }
+    }
+    return unless ( $cards && !$visible );
+    for my $crabcake ( $self->crabcakes ) {
+        for my $card ( $crabcake->all_cards ) {
+            $card->visible_to('everybody');
+        }
+    }
+    return 1;
+}
+
+sub playable_cards {
+    my ( $self, %args ) = @_;
+    my $discard  = $args{card};
+    my $playable = [];
+    for my $card ( $self->hand->all_cards ) {
+        push @{$playable}, $card if $card->can_play_on_top_of($discard);
+    }
+    return $playable if $self->hand->size;
+    for my $crabcake ( $self->crabcakes ) {
+        for my $card ( $crabcake->all_cards ) {
+            push @{$playable}, $card
+              if ( $card->visible_to eq 'everybody'
+                && $card->can_play_on_top_of($discard) );
+        }
+    }
+    return $playable;
 }
 
 sub _json_fields {
