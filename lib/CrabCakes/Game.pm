@@ -76,9 +76,21 @@ has 'players' => (
 before qw(take_turn ) => sub {
 
     my ( $self, %args ) = @_;
-    my $player_id = $args{id};
-    my $player    = $self->get_player_whos_turn_it_is();
-    die 'invalid player for turn' unless ( $player->id eq $player_id );
+    my $player_id     = $args{player_id};
+    my $player_number = $args{player_number};
+
+    my $player = $self->get_player_whos_turn_it_is();
+    if ( defined($player_id) ) {
+        die 'invalid player for turn' unless ( $player->id eq $player_id );
+    }
+    elsif ( defined($player_number) ) {
+        die 'invalid player for turn'
+          unless ( $player->player_counter eq $player_number );
+    }
+    else {
+        die "I need a player";
+
+    }
 };
 
 sub can_start_gameplay {
@@ -104,6 +116,13 @@ sub get_player_by_id {
 sub get_players_by_name {
     my ( $self, $name ) = @_;
     return [ grep { $name eq $_->name } $self->all_players ]->[0];
+}
+
+sub player_whos_turn_it_is {
+    my ($self) = @_;
+    my $player = $self->get_player_whos_turn_it_is;
+    return $player->player_counter if ($player);
+    return "PlayersNotReady";
 }
 
 sub get_player_whos_turn_it_is {
@@ -176,15 +195,11 @@ sub _draw_card() {
 sub take_turn() {
     my ( $self, %args ) = (@_);
 
-    my $player_id    = $args{id};
-    my $card_name    = $args{card};
+    my $card_name    = $args{card_name};
     my $get_discards = $args{discards};
 
-    my $player = $self->get_player_whos_turn_it_is();
-
-    #    unless ( $player->id eq $player_id ) {
-    #      die 'invalid player for turn';
-    #    }
+    my $player    = $self->get_player_whos_turn_it_is();
+    my $player_id = $player->id;
 
     my $turn = $self->turn();
     unless ($turn) {
@@ -226,11 +241,17 @@ sub take_turn() {
             $self->discards->add_card($object_card);
 
             if ( $object_card->plays_again ) {
+
                 $player->add_card( $self->discards )
                   if ( $object_card->number == 10 );
+
                 $player->perhaps_flip_crabcakes();
+
                 return;
-            }
+            }    #else {
+                 #$player->perhaps_flip_crabcakes();
+                 #$self->switch_player_turns;
+                 #}
         }
 
     }
@@ -334,9 +355,9 @@ sub starting_player {
         }
         $floor = $lowest;
     }
-    $self->get_player_by_id($player_id)->is_turn(1);
-    return $player_id;
-
+    my $first_player = $self->get_player_by_id($player_id);
+    $first_player->is_turn(1);
+    return $first_player->player_counter;
 }
 
 sub switch_player_turns {
@@ -345,7 +366,6 @@ sub switch_player_turns {
     my $player  = $self->get_player_whos_turn_it_is();
     my $counter = $player->player_counter;
     $player->is_turn(0);
-    $DB::single = 1;
     $counter = ( $counter < ( $self->game_size - 1 ) ) ? ( $counter + 1 ) : 0;
     my $new_player = $self->get_player_by_counter($counter);
     $new_player->is_turn(1);
@@ -356,7 +376,7 @@ sub switch_player_turns {
 #sub { return qw (starting_player discards game_size deck id players ready_players all_cards); }
 
 sub _json_fields {
-    qw (starting_player discards game_size deck id players ready_players );
+    qw (player_whos_turn_it_is starting_player discards game_size deck id players ready_players turn);
 }
 
 1;

@@ -23,7 +23,6 @@ dies_ok { my $card = Cards::Card->new( number => 19, suit => 'diamonds' ) }
 dies_ok { my $card = Cards::Card->new( number => 2, suit => 'dime' ) }
 'dies good number bad suit';
 
-$DB::single = 1;
 my $card = card_test( 2, 'diamonds' );
 my $new = copy_by_json($card);
 $card = card_test( 2, 'hearts' );

@@ -48,7 +48,7 @@ sub player_test {
     is( $player->crab_cakes_count, 4, 'count 4' );
 
     isa_ok( $player->hand, 'CrabCakes::Hand', 'empty hand' );
-    ok( $player->can('card_to_crabcake'), 'player can card_to_crabcake' );
+    ok( $player->can('card_to_crab_cake'), 'player can card_to_crab_cake' );
 
     my $new = copy_by_json($player);    #copy empty player
 
@@ -94,10 +94,10 @@ sub player_test {
         is( $_->get_crab_cake(3)->top_card->abbreviation, 'QC', 'QC cc 4 top' );
     }
 
-    $player->card_to_crabcake( 'AS', 0 );
-    $player->card_to_crabcake( 'AH', 1 );
-    $player->card_to_crabcake( 'AD', 2 );
-    $player->card_to_crabcake( 'AC', 3 );
+    $player->card_to_crab_cake( 'AS', 0 );
+    $player->card_to_crab_cake( 'AH', 1 );
+    $player->card_to_crab_cake( 'AD', 2 );
+    $player->card_to_crab_cake( 'AC', 3 );
 
     $new = copy_by_json($player);    #copy player who has shifted the crabcakes
 

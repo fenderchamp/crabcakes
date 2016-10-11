@@ -79,23 +79,22 @@ ok( $game->can('starting_player'), 'starting_player attribute found' );
 
 is( $game->turn->progress, $game->turn->NEW, 'NEW' );
 
-is( $game->starting_player, $player1->id, "starting player is player1" );
-$game->take_turn( id => $player1->id );
+is( $game->starting_player, $player1->player_counter,
+    "starting player is player1" );
+$game->take_turn( player_number => $player1->player_counter );
 is( $player1->hand->size, 5, 'player1 picked up a card' );
 
 is( $game->turn->progress, $game->turn->DREW, 'DREW' );
 
-$DB::single = 1;
-
-#throws_ok { $game->take_turn(card=>'8C', id => $player1->id) }, 'NO::CARD', 'not found');
-$game->take_turn( card => '8H', id => $player1->id );
+#throws_ok { $game->take_turn(card=>'8C', player_id => $player1->id) }, 'NO::CARD', 'not found');
+$game->take_turn( card_name => '8H', player_id => $player1->id );
 
 is( $game->discards->size,                   1,    'one card in the pile' );
 is( $game->discards->top_card->abbreviation, '8H', 'card was played' );
 is( $player1->hand->size,                    4,    'player1 pitched a card' );
 
 is( $game->turn->progress, $game->turn->PLAYED, 'PLAYED' );
-$game->take_turn( id => $player1->id );
+$game->take_turn( player_number => $player1->player_counter );
 
 is( $game->turn->progress,                 $game->turn->NEW, 'NEW' );
 is( $game->get_player_whos_turn_it_is->id, $player2->id,     "switched turns" );

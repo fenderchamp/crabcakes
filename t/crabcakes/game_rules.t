@@ -66,7 +66,8 @@ is( scalar @{ $game->unready_players }, 0, 'both ready now still' );
 ok( $game->can_start_gameplay,     'can_start_gameplay 2' );
 ok( $game->can('starting_player'), 'starting_player attribute found' );
 
-is( $game->starting_player, $player1->id, "starting player is player1" );
+is( $game->starting_player, $player1->player_counter,
+    "starting player is player1" );
 isa_ok( $game->get_player_whos_turn_it_is, 'CrabCakes::Player',
     'got a player' );
 

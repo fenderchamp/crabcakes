@@ -99,7 +99,7 @@ sub draw_new_card {
     $self->add_card( $deck->next_card() );
 }
 
-sub card_to_crabcake {
+sub card_to_crab_cake {
     my ( $self, $card_name, $crab_cake_number ) = @_;
     my $card_from_hand = $self->hand->get_card($card_name);
     my $top_card       = $self->get_crab_cake($crab_cake_number)->top_card();
