@@ -24,6 +24,18 @@ has 'discards' => (
     default => sub { CrabCakes::Discards->new() }
 );
 
+has 'errors' => (
+    traits  => ['Array'],
+    is      => 'rw',
+    isa     => 'ArrayRef',
+    default => sub { [] }, 
+    handles => { 
+      get_error      => 'get',
+      add_error      => 'push',
+      clear_errors   => 'clear',
+    },
+);
+
 has 'game_size' => (
     is      => 'rw',
     isa     => 'GameSizeType',
@@ -73,6 +85,12 @@ has 'players' => (
     },
 );
 
+after qw(add_error) => sub {
+    $DB::single=1;
+    my ( $self, $error ) = @_;
+    $self->get_error(0)->throw();
+};
+
 before qw(take_turn ) => sub {
 
     my ( $self, %args ) = @_;
@@ -80,6 +98,10 @@ before qw(take_turn ) => sub {
     my $player_number = $args{player_number};
 
     my $player = $self->get_player_whos_turn_it_is();
+$DB::single=1;
+
+    $self->throw_error_all_players_not_ready() unless ( $player );
+
     if ( defined($player_id) ) {
         die 'invalid player for turn' unless ( $player->id eq $player_id );
     }
@@ -92,6 +114,10 @@ before qw(take_turn ) => sub {
 
     }
 };
+
+sub make_error {
+   die 'with your boots on';
+}
 
 sub can_start_gameplay {
     my ($self) = @_;
@@ -373,10 +399,20 @@ sub switch_player_turns {
 
 }
 
+sub throw_error_all_players_not_ready {
+
+   my ($self) = @_;
+   $self->add_error(
+     CrabCakes::Error::AllPlayersNotReady->new(
+        players => $self->players));
+
+}
+
+
 #sub { return qw (starting_player discards game_size deck id players ready_players all_cards); }
 
 sub _json_fields {
-    qw (player_whos_turn_it_is starting_player discards game_size deck id players ready_players turn);
+    qw (player_whos_turn_it_is starting_player discards game_size deck id players ready_players turn errors);
 }
 
 1;
