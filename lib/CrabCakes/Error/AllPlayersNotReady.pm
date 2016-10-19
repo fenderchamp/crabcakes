@@ -23,4 +23,6 @@ sub _message {
       @{ $self->players };
 }
 
+sub _json_fields { qw(players) };
+
 1;

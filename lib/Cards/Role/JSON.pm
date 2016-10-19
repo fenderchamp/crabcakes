@@ -37,6 +37,7 @@ sub to_json {
         my $value = $self->$attribute();
         if ( ref $value eq 'ARRAY' ) {
 
+            $DB::single=1 if ( $attribute eq 'errors' );
             for (@$value) {
                 push @{ $data->{$attribute} }, $_->to_json('RAW')
                   if $_->can('to_json');

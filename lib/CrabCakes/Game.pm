@@ -32,6 +32,7 @@ has 'errors' => (
     handles => { 
       get_error      => 'get',
       add_error      => 'push',
+      error_count    => 'count',
       clear_errors   => 'clear',
     },
 );
@@ -86,8 +87,8 @@ has 'players' => (
 );
 
 after qw(add_error) => sub {
-    $DB::single=1;
     my ( $self, $error ) = @_;
+    $DB::single=1;
     $self->get_error(0)->throw();
 };
 
@@ -256,7 +257,6 @@ sub take_turn() {
             unless (
                 $object_card->can_play_on_top_of( $self->discards->top_card ) )
             {
-
                 $player->add_card($object_card);
                 CrabCakes::Error::CardNotPlayable->new(
                     card_to_play     => $object_card,
